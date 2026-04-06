@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
@@ -203,3 +202,60 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 print(f"\nX_train: {X_train.shape}  |  X_test: {X_test.shape}")
 print(f"y_train: {y_train.shape}  |  y_test: {y_test.shape}")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 6. TRAIN LINEAR REGRESSION
+# ═══════════════════════════════════════════════════════════════════════════════
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
+
+model = LinearRegression()
+model.fit(X_train_scaled, y_train)
+
+y_pred_train = model.predict(X_train_scaled)
+y_pred_test  = model.predict(X_test_scaled)
+
+train_r2   = r2_score(y_train, y_pred_train)
+test_r2    = r2_score(y_test,  y_pred_test)
+test_mae   = mean_absolute_error(y_test, y_pred_test)
+test_rmse  = mean_squared_error(y_test, y_pred_test) ** 0.5
+
+print("\n" + "=" * 55)
+print("LINEAR REGRESSION — Results")
+print("=" * 55)
+print(f"  Train R²:  {train_r2:.4f}")
+print(f"  Test  R²:  {test_r2:.4f}")
+print(f"  Test  MAE: ${test_mae:,.0f}")
+print(f"  Test  RMSE:${test_rmse:,.0f}")
+
+# Coefficients
+coef_df = pd.DataFrame({
+    'Feature':     X_train.columns,
+    'Coefficient': model.coef_
+}).sort_values('Coefficient', key=abs, ascending=False)
+print("\nTop coefficients (by absolute magnitude):")
+print(coef_df.to_string(index=False))
+
+# Residual plot
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+axes[0].scatter(y_pred_test, y_test - y_pred_test, alpha=0.3, s=10)
+axes[0].axhline(0, color='crimson', linewidth=1.5)
+axes[0].set_xlabel('Predicted')
+axes[0].set_ylabel('Residual')
+axes[0].set_title('Residuals vs Predicted')
+
+axes[1].scatter(y_test, y_pred_test, alpha=0.3, s=10)
+lims = [min(y_test.min(), y_pred_test.min()), max(y_test.max(), y_pred_test.max())]
+axes[1].plot(lims, lims, color='crimson', linewidth=1.5)
+axes[1].set_xlabel('Actual')
+axes[1].set_ylabel('Predicted')
+axes[1].set_title(f'Actual vs Predicted  (R² = {test_r2:.3f})')
+
+plt.tight_layout()
+plt.show()

@@ -32,3 +32,6 @@ A Kaggle API key is required for the first download. Place `kaggle.json` in `~/.
 ```bash
 python models/<model>.py
 ```
+## TODO: Apply bootstrap sampling to dataset to compensate for small database
+## TODO: Train model multiple times, cross-validation (leave one out cross validation) to adjust for small sampling size
+

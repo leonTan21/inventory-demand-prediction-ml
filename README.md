@@ -48,6 +48,4 @@ All models share the same preprocessing pipeline:
 python models/linear_regression.py
 python models/random_forest.py
 python models/gradient_boosting.py
-```
 
-Each script prints metrics at both log and original scale, and displays diagnostic plots (residuals vs predicted, actual vs predicted, feature importances, learning curve, and a comparison chart against the Linear Regression baseline).

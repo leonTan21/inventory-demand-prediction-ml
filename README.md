@@ -1,6 +1,6 @@
 # Walmart Weekly Sales — ML Project
 
-This project predicts weekly sales across 45 Walmart stores using six machine learning regression models, comparing their performance on real retail data from Kaggle.
+This project predicts weekly sales across 45 Walmart stores using six machine learning regression models, comparing their performance on real retail data from Kaggle. This will help the stores with stock management.
 
 ## Purpose
 

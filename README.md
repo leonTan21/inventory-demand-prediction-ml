@@ -88,6 +88,33 @@ Key takeaways:
 - Linear and Ridge Regression perform nearly identically — regularisation alone does not address the dataset's non-linearity.
 - XGBoost underperforms with default settings; tuning `n_estimators`, `max_depth`, and `learning_rate` would improve it.
 
+## Visualizations
+
+### Sales trend over time
+Monthly mean weekly sales across all 45 stores — reveals seasonal peaks (Nov–Dec holiday spike) and the overall sales scale the models must capture.
+
+![Sales trend](images/sales_trend.png)
+
+### Feature importances — Random Forest
+Top 15 drivers of weekly sales. Store identity dominates, confirming that store-level characteristics (size, location, demographics) are far more predictive than macroeconomic indicators like CPI or unemployment.
+
+![Feature importances](images/feature_importance.png)
+
+### Model comparison
+Test R² (higher is better) and Test RMSE (lower is better) across all six models, sorted by Test R². Random Forest leads on both metrics.
+
+![Model comparison](images/model_comparison.png)
+
+### Actual vs predicted — Random Forest (best model)
+Each point is a held-out test observation. Points cluster tightly along the perfect-prediction diagonal, with the model explaining 95.6% of sales variance.
+
+![Actual vs predicted](images/actual_vs_predicted.png)
+
+### Residuals — Random Forest
+Residuals scattered randomly around zero with no systematic pattern — the model is unbiased. Mild heteroscedasticity at higher volumes is typical for retail sales data.
+
+![Residuals](images/residuals.png)
+
 ## Reproducing results
 
 The preprocessing pipeline applied to every model:

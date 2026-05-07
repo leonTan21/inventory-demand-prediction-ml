@@ -70,9 +70,27 @@ To run the full end-to-end analysis with EDA, feature selection, all six models,
 jupyter notebook notebooks/walmart_sales_prediction.ipynb
 ```
 
+## Results
+
+All models share a fixed `random_state=42` and an 80/20 train/test split. The winner is **Random Forest** by Test R², with the lowest MAE and RMSE among all six models.
+
+| Model | Train R² | Test R² | Test MAE | Test RMSE |
+|---|---:|---:|---:|---:|
+| Linear Regression | 0.9272 | 0.9256 | $96,163 | $154,818 |
+| Polynomial Regression (Degree 2) | 0.9563 | 0.9484 | $78,223 | $128,887 |
+| Ridge Regression | 0.9272 | 0.9256 | $96,161 | $154,820 |
+| XGBoost | 0.8409 | 0.8324 | $188,268 | $232,394 |
+| **Random Forest** | **0.9942** | **0.9562** | **$64,214** | **$118,830** |
+| Gradient Boosting | 0.9634 | 0.9446 | $85,187 | $133,577 |
+
+Key takeaways:
+- Random Forest achieves the best Test R² (0.9562) and lowest MAE ($64,214), explaining 95.6% of sales variance.
+- Linear and Ridge Regression perform nearly identically — regularisation alone does not address the dataset's non-linearity.
+- XGBoost underperforms with default settings; tuning `n_estimators`, `max_depth`, and `learning_rate` would improve it.
+
 ## Reproducing results
 
-All experiments use a fixed `random_state=42` and an 80/20 train/test split. The preprocessing pipeline applied to every model is:
+The preprocessing pipeline applied to every model:
 
 - `Date` decomposed into `Week`, `Month`, `Year`
 - `Fuel_Price` dropped (Pearson p = 0.4478, not significant)
@@ -84,8 +102,8 @@ All experiments use a fixed `random_state=42` and an 80/20 train/test split. The
 | Linear Regression | `models/linear_regression.py` | Statistical feature selection (Pearson, Kendall, t-test, ANOVA); StandardScaler |
 | Polynomial Regression | `models/polynomial_regression.py` | Degree-2 features; StandardScaler |
 | Ridge Regression | `models/ridge.py` | GridSearchCV over alpha; StandardScaler |
-| XGBoost | `models/xgboost_regression.py` | GridSearchCV over n_estimators, max_depth, learning_rate, subsample |
-| Random Forest | `models/random_forest.py` | GridSearchCV over n_estimators, max_features, max_depth, min_samples_split; OOB score |
-| Gradient Boosting | `models/gradient_boosting.py` | GridSearchCV over n_estimators, max_depth, learning_rate, subsample |
+| XGBoost | `models/xgboost_regression.py` | n_estimators=100, learning_rate=0.1, max_depth=3 |
+| Random Forest | `models/random_forest.py` | n_estimators=200, max_features='sqrt'; OOB score |
+| Gradient Boosting | `models/gradient_boosting.py` | n_estimators=200, max_depth=4, learning_rate=0.1 |
 
 Running the same scripts on the same dataset with the settings above will reproduce the reported metrics exactly.
